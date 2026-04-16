@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penjualan Makanan & Minuman</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .menu-section, .cart-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            height: fit-content;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #ff6b6b;
+            padding-bottom: 10px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .menu-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .menu-item h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .price {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .cart-item-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: #ff6b6b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+
+        .qty-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .total-section {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .total-amount {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .checkout-btn {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .checkout-btn:hover {
+            background: #45b7aa;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Warung Makan Digital</h1>
+            <p>Sistem Penjualan Makanan & Minuman</p>
+        </div>
+
+        <div class="main-content">
+            <div class="menu-section">
+                <h2 class="section-title">📋 Menu</h2>
+                <div class="menu-grid" id="menuGrid">
+                    <!-- Menu items akan di-generate oleh JavaScript -->
+                </div>
+            </div>
+
+            <div class="cart-section">
+                <h2 class="section-title">🛒 Keranjang</h2>
+                <div id="cartItems"></div>
+                <div class="total-section">
+                    <div>Total: Rp <span id="totalAmount">0</span></div>
+                    <div class="total-amount">Rp <span id="grandTotal">0</span></div>
+                    <button class="checkout-btn" onclick="checkout()">
+                        💳 Checkout & Bayar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data menu makanan dan minuman
+        const menuItems = [
+            { id: 1, name: 'Nasi Goreng', price: 25000, img: '🍚', category: 'Makanan' },
+            { id: 2, name: 'Ayam Bakar', price: 30000, img: '🍗', category: 'Makanan' },
+            { id: 3, name: 'Mie Goreng', price: 22000, img: '🍜', category: 'Makanan' },
+            { id: 4, name: 'Sate Ayam 10 Tusuk', price: 28000, img: '🍡', category: 'Makanan' },
+            { id: 5, name: 'Nasi Kuning', price: 10000, img: '🍛', category: 'Makanan' },
+            { id: 6, name: 'Es Teh Manis', price: 5000, img: '🧊', category: 'Minuman' },
+            { id: 7, name: 'Jus Jeruk', price: 12000, img: '🍊', category: 'Minuman' },
+            { id: 8, name: 'Kopi Hitam', price: 8000, img: '☕', category: 'Minuman' },
+            { id: 9, name: 'Es Jeruk', price: 10000, img: '🍹', category: 'Minuman' },
+            { id: 10, name: 'Air Mineral', price: 5000, img: '💧', category: 'Minuman' }
+        ];
+
+        let cart = [];
+
+        // Render menu
+        function renderMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = menuItems.map(item => `
+                <div class="menu-item" onclick="addToCart(${item.id})">
+                    <div>${item.img}</div>
+                    <h3>${item.name}</h3>
+                    <div class="price">Rp ${item.price.toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // Tambah ke keranjang
+        function addToCart(itemId) {
+            const item = menuItems.find(menu => menu.id === itemId);
+            const existingItem = cart.find(cartItem => cartItem.id === itemId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+
+            renderCart();
+        }
+
+        // Render keranjang
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const totalAmount = document.getElementById('totalAmount');
+            const grandTotal = document.getElementById('grandTotal');
+
+            cartItems.innerHTML = cart.map((item, index) => {
+                const subtotal = item.price * item.quantity;
+                return `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>Rp ${item.price.toLocaleString()} x ${item.quantity}</small>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                            <span class="qty-display">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                            <button class="qty-btn" style="background:#ff4444;" onclick="removeItem(${index})">🗑️</button>
+                        </div>
+                        <div style="font-weight:bold; color:#ff6b6b;">
+                            Rp ${subtotal.toLocaleString()}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            totalAmount.textContent = total.toLocaleString();
+            grandTotal.textContent = total.toLocaleString();
+        }
+
+        // Update quantity
+        function updateQuantity(index, change) {
+            if (cart[index].quantity + change <= 0) {
+                removeItem(index);
+                return;
+            }
+            cart[index].quantity += change;
+            renderCart();
+        }
+
+        // Hapus item
+        function removeItem(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        // Checkout
+        function checkout() {
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            if (cart.length === 0) {
+                alert('Keranjang kosong!');
+                return;
+            }
+
+            let receipt = '=== STRUK PEMBELIAN ===\n\n';
+            cart.forEach(item => {
+                const subtotal = item.price * item.quantity;
+                receipt += `${item.name} (${item.quantity}x) - Rp ${subtotal.toLocaleString()}\n`;
+            });
+            receipt += `\nTotal: Rp ${total.toLocaleString()}\n`;
+            receipt += 'Terima kasih telah berbelanja!\n';
+            receipt += `Tanggal: ${new Date().toLocaleString('id-ID')}`;
+
+            alert(receipt);
+            
+            // Reset keranjang
+            cart = [];
+            renderCart();
+        }
+
+        // Inisialisasi aplikasi
+        renderMenu();
+        renderCart();
+    </script>
+</body>
+</html>
