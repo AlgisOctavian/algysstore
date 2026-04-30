@@ -1,2 +1,2 @@
 # algysstore
-menjual makanan dan minuman secara online
+Menjual barang-barang elektronik, makanan dan obat-obatan 
