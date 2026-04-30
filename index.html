@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Penjualan Makanan & Minuman</title>
+    <title>MiniShopee - Toko Online</title>
     <style>
         * {
             margin: 0;
@@ -15,323 +15,565 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ee4d2d;
+        }
+
+        .search-box {
+            flex: 1;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #ee4d2d;
+            box-shadow: 0 0 10px rgba(238, 77, 45, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.5rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ee4d2d;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .category-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-        }
-
-        .menu-section, .cart-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            height: fit-content;
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #ff6b6b;
-            padding-bottom: 10px;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .menu-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        .menu-item:hover {
+        .category-btn.active,
+        .category-btn:hover {
+            background: #ee4d2d;
+            color: white;
+            border-color: #ee4d2d;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
-        .menu-item img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        .product-image {
+            width: 100%;
+            height: 200px;
             object-fit: cover;
-            margin-bottom: 10px;
         }
 
-        .menu-item h3 {
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
             color: #333;
-            margin-bottom: 5px;
         }
 
-        .price {
-            font-size: 1.2em;
+        .product-price {
+            font-size: 1.3rem;
             font-weight: bold;
-            color: #ff6b6b;
+            color: #ee4d2d;
+            margin-bottom: 0.5rem;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            color: #ffa500;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(45deg, #ee4d2d, #f57c00);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(238, 77, 45, 0.4);
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
         }
 
         .cart-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: white;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
         }
 
-        .cart-item-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
-        .qty-btn {
-            width: 35px;
-            height: 35px;
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .remove-item {
+            background: #ff4444;
+            color: white;
             border: none;
-            border-radius: 50%;
-            background: #ff6b6b;
-            color: white;
-            font-weight: bold;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .qty-btn:hover {
-            background: #ff5252;
-            transform: scale(1.1);
-        }
-
-        .qty-display {
-            min-width: 40px;
-            text-align: center;
+        .total {
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #333;
-        }
-
-        .total-section {
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .total-amount {
-            font-size: 2em;
-            font-weight: bold;
-            margin: 10px 0;
+            text-align: right;
+            margin-top: 1rem;
+            color: #ee4d2d;
         }
 
         .checkout-btn {
-            background: #4ecdc4;
+            width: 100%;
+            padding: 1rem;
+            background: #00c851;
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border-radius: 50px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .checkout-btn:hover {
-            background: #45b7aa;
-            transform: translateY(-2px);
+            margin-top: 1rem;
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                padding: 20px;
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-box {
+                margin: 0;
+                order: 3;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
             }
         }
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">🚀 MiniShopee</div>
+            <div class="search-box">
+                <i class="search-icon">🔍</i>
+                <input type="text" class="search-input" placeholder="Cari produk, merek, kategori..." id="searchInput">
+            </div>
+            <div class="cart-icon" id="cartIcon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
-        <div class="header">
-            <h1>🍽️ Warung Makan Digital</h1>
-            <p>Sistem Penjualan Makanan & Minuman</p>
+        <div class="categories">
+            <button class="category-btn active" data-category="all">Semua</button>
+            <button class="category-btn" data-category="elektronik">Elektronik</button>
+            <button class="category-btn" data-category="fashion">Fashion</button>
+            <button class="category-btn" data-category="makanan">Makanan</button>
+            <button class="category-btn" data-category="kesehatan">Kesehatan</button>
         </div>
 
-        <div class="main-content">
-            <div class="menu-section">
-                <h2 class="section-title">📋 Menu</h2>
-                <div class="menu-grid" id="menuGrid">
-                    <!-- Menu items akan di-generate oleh JavaScript -->
-                </div>
-            </div>
+        <div class="products-grid" id="productsGrid">
+            <!-- Produk akan dimuat oleh JavaScript -->
+        </div>
+    </div>
 
-            <div class="cart-section">
-                <h2 class="section-title">🛒 Keranjang</h2>
-                <div id="cartItems"></div>
-                <div class="total-section">
-                    <div>Total: Rp <span id="totalAmount">0</span></div>
-                    <div class="total-amount">Rp <span id="grandTotal">0</span></div>
-                    <button class="checkout-btn" onclick="checkout()">
-                        💳 Checkout & Bayar
-                    </button>
-                </div>
-            </div>
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <h2>🛒 Keranjang Belanja</h2>
+            <div id="cartItems"></div>
+            <div class="total" id="cartTotal">Total: Rp 0</div>
+            <button class="checkout-btn" onclick="checkout()">Checkout Sekarang</button>
+            <button onclick="closeCart()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ddd; border: none; border-radius: 5px; cursor: pointer;">Tutup</button>
         </div>
     </div>
 
     <script>
-        // Data menu makanan dan minuman
-        const menuItems = [
-            { id: 1, name: 'Nasi Goreng', price: 25000, img: '🍚', category: 'Makanan' },
-            { id: 2, name: 'Ayam Bakar', price: 30000, img: '🍗', category: 'Makanan' },
-            { id: 3, name: 'Mie Goreng', price: 22000, img: '🍜', category: 'Makanan' },
-            { id: 4, name: 'Sate Ayam 10 Tusuk', price: 28000, img: '🍡', category: 'Makanan' },
-            { id: 5, name: 'Nasi Kuning', price: 10000, img: '🍛', category: 'Makanan' },
-            { id: 6, name: 'Es Teh Manis', price: 5000, img: '🧊', category: 'Minuman' },
-            { id: 7, name: 'Jus Jeruk', price: 12000, img: '🍊', category: 'Minuman' },
-            { id: 8, name: 'Kopi Hitam', price: 8000, img: '☕', category: 'Minuman' },
-            { id: 9, name: 'Es Jeruk', price: 10000, img: '🍹', category: 'Minuman' },
-            { id: 10, name: 'Air Mineral', price: 5000, img: '💧', category: 'Minuman' }
+        // Data produk
+        const products = [
+            {
+                id: 1,
+                name: "iPhone 15 Pro Max",
+                price: 18999000,
+                originalPrice: 21999000,
+                image: "📱",
+                category: "elektronik",
+                rating: 4.9
+            },
+            {
+                id: 2,
+                name: "Nike Air Jordan 1",
+                price: 2490000,
+                originalPrice: 2990000,
+                image: "👟",
+                category: "fashion",
+                rating: 4.8
+            },
+            {
+                id: 3,
+                name: "Laptop ASUS ROG",
+                price: 15999000,
+                image: "💻",
+                category: "elektronik",
+                rating: 4.7
+            },
+            {
+                id: 4,
+                name: "Kemeja Flanel Premium",
+                price: 299000,
+                image: "👔",
+                category: "fashion",
+                rating: 4.6
+            },
+            {
+                id: 5,
+                name: "Vitamin C 1000mg",
+                price: 89000,
+                image: "💊",
+                category: "kesehatan",
+                rating: 4.9
+            },
+            {
+                id: 6,
+                name: "Kopi Arabika Premium",
+                price: 125000,
+                image: "☕",
+                category: "makanan",
+                rating: 4.8
+            },
+            {
+                id: 7,
+                name: "Smartwatch Galaxy",
+                price: 3290000,
+                image: "⌚",
+                category: "elektronik",
+                rating: 4.7
+            },
+            {
+                id: 8,
+                name: "Tas Ransel Laptop",
+                price: 450000,
+                image: "🎒",
+                category: "fashion",
+                rating: 4.6
+            }
         ];
 
         let cart = [];
 
-        // Render menu
-        function renderMenu() {
-            const menuGrid = document.getElementById('menuGrid');
-            menuGrid.innerHTML = menuItems.map(item => `
-                <div class="menu-item" onclick="addToCart(${item.id})">
-                    <div>${item.img}</div>
-                    <h3>${item.name}</h3>
-                    <div class="price">Rp ${item.price.toLocaleString()}</div>
+        // Format harga
+        function formatPrice(price) {
+            return new Intl.NumberFormat('id-ID').format(price);
+        }
+
+        // Render produk
+        function renderProducts(productsToShow) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = productsToShow.map(product => `
+                <div class="product-card" data-category="${product.category}">
+                    <div style="height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; background: #f8f9fa;">
+                        ${product.image}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-price">
+                            Rp ${formatPrice(product.price)}
+                            ${product.originalPrice ? `<span class="original-price">Rp ${formatPrice(product.originalPrice)}</span>` : ''}
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐${'⭐'.repeat(Math.floor(product.rating))}</span>
+                            <span>(${product.rating})</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">🛒 Tambah ke Keranjang</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        // Tambah ke keranjang
-        function addToCart(itemId) {
-            const item = menuItems.find(menu => menu.id === itemId);
-            const existingItem = cart.find(cartItem => cartItem.id === itemId);
+        // Filter kategori
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const category = btn.dataset.category;
+                const filtered = category === 'all' 
+                    ? products 
+                    : products.filter(p => p.category === category);
+                renderProducts(filtered);
+            });
+        });
 
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        });
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({ ...item, quantity: 1 });
+                cart.push({ ...product, quantity: 1 });
             }
-
-            renderCart();
+            
+            updateCartUI();
+            showNotification('Produk ditambahkan ke keranjang!');
         }
 
-        // Render keranjang
-        function renderCart() {
-            const cartItems = document.getElementById('cartItems');
-            const totalAmount = document.getElementById('totalAmount');
-            const grandTotal = document.getElementById('grandTotal');
-
-            cartItems.innerHTML = cart.map((item, index) => {
-                const subtotal = item.price * item.quantity;
-                return `
-                    <div class="cart-item">
-                        <div>
-                            <strong>${item.name}</strong><br>
-                            <small>Rp ${item.price.toLocaleString()} x ${item.quantity}</small>
-                        </div>
-                        <div class="cart-item-controls">
-                            <button class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
-                            <span class="qty-display">${item.quantity}</span>
-                            <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
-                            <button class="qty-btn" style="background:#ff4444;" onclick="removeItem(${index})">🗑️</button>
-                        </div>
-                        <div style="font-weight:bold; color:#ff6b6b;">
-                            Rp ${subtotal.toLocaleString()}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            totalAmount.textContent = total.toLocaleString();
-            grandTotal.textContent = total.toLocaleString();
+        // Update cart UI
+        function updateCartUI() {
+            document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
         }
 
-        // Update quantity
-        function updateQuantity(index, change) {
-            if (cart[index].quantity + change <= 0) {
-                removeItem(index);
+        // Show cart modal
+        document.getElementById('cartIcon').addEventListener('click', () => {
+            document.getElementById('cartModal').style.display = 'flex';
+            renderCartItems();
+        });
+
+        // Close cart
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        // Render cart items
+        function renderCartItems() {
+            const cartItemsEl = document.getElementById('cartItems');
+            const totalEl = document.getElementById('cartTotal');
+            
+            if (cart.length === 0) {
+                cartItemsEl.innerHTML = '<div class="empty-cart">Keranjang kosong 😢</div>';
+                totalEl.textContent = 'Total: Rp 0';
                 return;
             }
-            cart[index].quantity += change;
-            renderCart();
+
+            cartItemsEl.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div style="font-size: 3rem;">${item.image}</div>
+                    <div class="cart-item-info">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">${item.name}</div>
+                        <div style="color: #ee4d2d; font-weight: bold; margin-bottom: 0.5rem;">
+                            Rp ${formatPrice(item.price * item.quantity)}
+                        </div>
+                        <div style="margin-bottom: 0.5rem;">Qty: ${item.quantity}</div>
+                    </div>
+                    <button class="remove-item" onclick="removeFromCart(${index})">Hapus</button>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            totalEl.textContent = `Total: Rp ${formatPrice(total)}`;
         }
 
-        // Hapus item
-        function removeItem(index) {
+        // Remove from cart
+        function removeFromCart(index) {
             cart.splice(index, 1);
-            renderCart();
+            renderCartItems();
+            updateCartUI();
         }
 
         // Checkout
         function checkout() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
             if (cart.length === 0) {
                 alert('Keranjang kosong!');
                 return;
             }
-
-            let receipt = '=== STRUK PEMBELIAN ===\n\n';
-            cart.forEach(item => {
-                const subtotal = item.price * item.quantity;
-                receipt += `${item.name} (${item.quantity}x) - Rp ${subtotal.toLocaleString()}\n`;
-            });
-            receipt += `\nTotal: Rp ${total.toLocaleString()}\n`;
-            receipt += 'Terima kasih telah berbelanja!\n';
-            receipt += `Tanggal: ${new Date().toLocaleString('id-ID')}`;
-
-            alert(receipt);
             
-            // Reset keranjang
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            alert(`Terima kasih! Total pembelian: Rp ${formatPrice(total)}\nPesanan akan diproses...`);
             cart = [];
-            renderCart();
+            updateCartUI();
+            closeCart();
         }
 
-        // Inisialisasi aplikasi
-        renderMenu();
-        renderCart();
+        // Notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #00c851;
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Close modal on outside click
+        document.getElementById('cartModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('cartModal')) {
+                closeCart();
+            }
+        });
+
+        // Initial render
+        renderProducts(products);
     </script>
 </body>
 </html>
