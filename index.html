@@ -86,27 +86,32 @@
             font-size: 1.1rem;
         }
 
-        .cart-icon {
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .action-btn {
             position: relative;
             font-size: 1.5rem;
             color: #333;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: all 0.3s;
             background: #f8f9fa;
             padding: 0.6rem 1rem;
             border-radius: 12px;
+            border: none;
         }
 
-        .cart-icon:hover {
+        .action-btn:hover {
             transform: scale(1.1);
             background: #eee;
         }
 
-        .cart-count {
+        .badge {
             position: absolute;
             top: -5px;
             right: -5px;
-            background: #ee4d2d;
             color: white;
             border-radius: 50%;
             width: 22px;
@@ -118,6 +123,9 @@
             font-weight: bold;
             border: 2px solid white;
         }
+
+        .badge-cart { background: #ee4d2d; }
+        .badge-wish { background: #ff4757; }
 
         .container {
             max-width: 1200px;
@@ -133,14 +141,8 @@
             padding-bottom: 1rem;
         }
 
-        .categories::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .categories::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.4);
-            border-radius: 10px;
-        }
+        .categories::-webkit-scrollbar { height: 4px; }
+        .categories::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 10px; }
 
         .category-btn {
             padding: 0.8rem 1.5rem;
@@ -177,7 +179,6 @@
             overflow: hidden;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
         }
 
         .product-card:hover {
@@ -204,6 +205,17 @@
             transform: scale(1.08);
         }
 
+        .img-fallback {
+            display: none;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #adb5bd;
+        }
+
         .discount-badge {
             position: absolute;
             top: 12px;
@@ -215,6 +227,7 @@
             font-size: 0.8rem;
             font-weight: bold;
             box-shadow: 0 2px 8px rgba(238,77,45,0.4);
+            z-index: 2;
         }
 
         .wishlist-btn {
@@ -234,17 +247,20 @@
             transition: all 0.3s;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             backdrop-filter: blur(5px);
+            z-index: 2;
         }
 
-        .wishlist-btn:hover {
-            background: #ff4757;
-            color: white;
-            transform: scale(1.15);
-        }
+        .wishlist-btn:hover { transform: scale(1.15); }
 
         .wishlist-btn.active {
             background: #ff4757;
-            color: white;
+            animation: heartPop 0.4s ease;
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
 
         .product-info {
@@ -291,22 +307,9 @@
             margin-bottom: 1rem;
         }
 
-        .stars {
-            color: #ffa500;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        .rating-text {
-            color: #888;
-            font-size: 0.85rem;
-        }
-
-        .sold-text {
-            color: #aaa;
-            font-size: 0.8rem;
-            margin-left: auto;
-        }
+        .stars { color: #ffa500; font-size: 0.85rem; letter-spacing: 1px; }
+        .rating-text { color: #888; font-size: 0.85rem; }
+        .sold-text { color: #aaa; font-size: 0.8rem; margin-left: auto; }
 
         .add-to-cart {
             width: 100%;
@@ -330,18 +333,13 @@
             box-shadow: 0 5px 20px rgba(238, 77, 45, 0.45);
         }
 
-        .add-to-cart:active {
-            transform: scale(0.98);
-        }
+        .add-to-cart:active { transform: scale(0.98); }
 
-        /* Cart Modal */
-        .cart-modal {
+        .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
             z-index: 1000;
             align-items: center;
@@ -349,7 +347,7 @@
             backdrop-filter: blur(4px);
         }
 
-        .cart-content {
+        .modal-content {
             background: white;
             width: 90%;
             max-width: 600px;
@@ -360,16 +358,10 @@
             animation: modalIn 0.35s ease;
         }
 
-        .cart-content::-webkit-scrollbar {
-            width: 6px;
-        }
+        .modal-content::-webkit-scrollbar { width: 6px; }
+        .modal-content::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
 
-        .cart-content::-webkit-scrollbar-thumb {
-            background: #ddd;
-            border-radius: 10px;
-        }
-
-        .cart-header {
+        .modal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -378,16 +370,15 @@
             border-bottom: 2px solid #f0f0f0;
         }
 
-        .cart-header h2 {
+        .modal-header h2 {
             font-size: 1.4rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .close-cart-btn {
-            width: 36px;
-            height: 36px;
+        .close-btn {
+            width: 36px; height: 36px;
             border: none;
             background: #f0f0f0;
             border-radius: 50%;
@@ -399,22 +390,91 @@
             justify-content: center;
         }
 
-        .close-cart-btn:hover {
-            background: #ff4757;
-            color: white;
+        .close-btn:hover { background: #ff4757; color: white; }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
 
-        .empty-cart {
+        .wish-card {
+            background: #fafafa;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+
+        .wish-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+
+        .wish-card-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .wish-card-body { padding: 0.8rem; }
+
+        .wish-card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wish-card-price {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #ee4d2d;
+            margin-bottom: 0.6rem;
+        }
+
+        .wish-card-actions { display: flex; gap: 0.4rem; }
+
+        .wish-cart-btn {
+            flex: 1;
+            padding: 0.5rem;
+            background: linear-gradient(45deg, #ee4d2d, #f57c00);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .wish-cart-btn:hover { box-shadow: 0 3px 10px rgba(238,77,45,0.4); }
+
+        .wish-remove-btn {
+            width: 34px; height: 34px;
+            background: #fff0f0;
+            color: #ff4757;
+            border: 1px solid #ffcccc;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .wish-remove-btn:hover { background: #ff4757; color: white; border-color: #ff4757; }
+
+        .empty-state {
             text-align: center;
             padding: 3rem 1rem;
             color: #999;
         }
 
-        .empty-cart-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
+        .empty-state-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
 
         .cart-item {
             display: flex;
@@ -425,17 +485,14 @@
         }
 
         .cart-item-img {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             object-fit: cover;
             border-radius: 12px;
             flex-shrink: 0;
+            background: #f0f0f0;
         }
 
-        .cart-item-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .cart-item-info { flex: 1; min-width: 0; }
 
         .cart-item-name {
             font-weight: 600;
@@ -453,15 +510,10 @@
             margin-bottom: 0.4rem;
         }
 
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        .qty-controls { display: flex; align-items: center; gap: 0.5rem; }
 
         .qty-btn {
-            width: 28px;
-            height: 28px;
+            width: 28px; height: 28px;
             border: 1px solid #ddd;
             background: #f8f8f8;
             border-radius: 6px;
@@ -473,17 +525,8 @@
             transition: all 0.2s;
         }
 
-        .qty-btn:hover {
-            background: #ee4d2d;
-            color: white;
-            border-color: #ee4d2d;
-        }
-
-        .qty-value {
-            font-weight: 600;
-            min-width: 24px;
-            text-align: center;
-        }
+        .qty-btn:hover { background: #ee4d2d; color: white; border-color: #ee4d2d; }
+        .qty-value { font-weight: 600; min-width: 24px; text-align: center; }
 
         .remove-item {
             background: none;
@@ -496,9 +539,7 @@
             flex-shrink: 0;
         }
 
-        .remove-item:hover {
-            color: #ff4757;
-        }
+        .remove-item:hover { color: #ff4757; }
 
         .cart-summary {
             margin-top: 1.5rem;
@@ -561,13 +602,9 @@
             max-width: 350px;
         }
 
-        .notification.success {
-            background: linear-gradient(45deg, #00c851, #00e676);
-        }
-
-        .notification.error {
-            background: linear-gradient(45deg, #ff4757, #ff6b81);
-        }
+        .notification.success { background: linear-gradient(45deg, #00c851, #00e676); }
+        .notification.error { background: linear-gradient(45deg, #ff4757, #ff6b81); }
+        .notification.wish { background: linear-gradient(45deg, #e84393, #fd79a8); }
 
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(100px); }
@@ -592,12 +629,9 @@
         }
 
         @media (max-width: 768px) {
-            .header-top {
-                flex-wrap: wrap;
-                gap: 0.8rem;
-            }
+            .header-top { flex-wrap: wrap; gap: 0.8rem; }
             .logo { order: 1; }
-            .cart-icon { order: 2; padding: 0.5rem 0.8rem; font-size: 1.3rem; }
+            .header-actions { order: 2; }
             .search-box { margin: 0; order: 3; flex-basis: 100%; }
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
             .product-image-wrapper { height: 160px; }
@@ -605,14 +639,16 @@
             .product-title { font-size: 0.9rem; min-height: 2.5rem; }
             .product-price { font-size: 1.1rem; }
             .container { padding: 1rem; }
-            .cart-content { width: 95%; padding: 1.5rem; max-height: 90vh; }
+            .modal-content { width: 95%; padding: 1.5rem; max-height: 90vh; }
+            .wishlist-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
         }
 
         @media (max-width: 480px) {
-            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .products-grid { gap: 0.8rem; }
             .product-image-wrapper { height: 140px; }
             .add-to-cart { padding: 0.7rem; font-size: 0.85rem; }
             .discount-badge { font-size: 0.7rem; padding: 3px 7px; }
+            .wishlist-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -627,9 +663,15 @@
                 <span class="search-icon">🔍</span>
                 <input type="text" class="search-input" placeholder="Cari produk, merek, kategori..." id="searchInput">
             </div>
-            <div class="cart-icon" id="cartIcon">
-                🛒
-                <span class="cart-count" id="cartCount" style="display:none;">0</span>
+            <div class="header-actions">
+                <button class="action-btn" id="wishIcon" title="Wishlist">
+                    ❤️
+                    <span class="badge badge-wish" id="wishCount" style="display:none;">0</span>
+                </button>
+                <button class="action-btn" id="cartIcon" title="Keranjang">
+                    🛒
+                    <span class="badge badge-cart" id="cartCount" style="display:none;">0</span>
+                </button>
             </div>
         </div>
     </header>
@@ -644,18 +686,26 @@
         </div>
 
         <div class="products-grid" id="productsGrid"></div>
+        <div class="footer">&copy; 2025 LowPiee — Semua hak dilindungi</div>
+    </div>
 
-        <div class="footer">
-            &copy; 2025 LowPiee — Semua hak dilindungi
+    <!-- Wishlist Modal -->
+    <div class="modal-overlay" id="wishModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>❤️ Wishlist Saya</h2>
+                <button class="close-btn" onclick="closeWish()">✕</button>
+            </div>
+            <div id="wishItems"></div>
         </div>
     </div>
 
     <!-- Cart Modal -->
-    <div class="cart-modal" id="cartModal">
-        <div class="cart-content">
-            <div class="cart-header">
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h2>🛒 Keranjang Belanja</h2>
-                <button class="close-cart-btn" onclick="closeCart()">✕</button>
+                <button class="close-btn" onclick="closeCart()">✕</button>
             </div>
             <div id="cartItems"></div>
             <div id="cartSummary"></div>
@@ -669,7 +719,8 @@
                 name: "iPhone 15 Pro Max 256GB Titanium",
                 price: 18999000,
                 originalPrice: 21999000,
-                image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&q=80",
+                fallback: "📱",
                 category: "elektronik",
                 rating: 4.9,
                 sold: 3200
@@ -680,6 +731,7 @@
                 price: 2490000,
                 originalPrice: 2990000,
                 image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&q=80",
+                fallback: "👟",
                 category: "fashion",
                 rating: 4.8,
                 sold: 1500
@@ -689,7 +741,8 @@
                 name: "Laptop ASUS ROG Strix G16 RTX 4060",
                 price: 15999000,
                 originalPrice: null,
-                image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=400&h=400&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop&q=80",
+                fallback: "💻",
                 category: "elektronik",
                 rating: 4.7,
                 sold: 890
@@ -699,7 +752,8 @@
                 name: "Kemeja Flanel Premium Unisex",
                 price: 299000,
                 originalPrice: 450000,
-                image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=400&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=400&fit=crop&q=80",
+                fallback: "👔",
                 category: "fashion",
                 rating: 4.6,
                 sold: 5400
@@ -707,9 +761,10 @@
             {
                 id: 5,
                 name: "Vitamin C 1000mg + Zinc Isi 60 Tablet",
-                price: 8900,
+                price: 89000,
                 originalPrice: 120000,
                 image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop&q=80",
+                fallback: "💊",
                 category: "kesehatan",
                 rating: 4.9,
                 sold: 12000
@@ -720,6 +775,7 @@
                 price: 125000,
                 originalPrice: 165000,
                 image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&h=400&fit=crop&q=80",
+                fallback: "☕",
                 category: "makanan",
                 rating: 4.8,
                 sold: 7800
@@ -729,27 +785,30 @@
                 name: "Samsung Galaxy Watch 6 Classic",
                 price: 3290000,
                 originalPrice: 3999000,
-                image: "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=400&h=400&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop&q=80",
+                fallback: "⌚",
                 category: "elektronik",
                 rating: 4.7,
                 sold: 670
             },
             {
                 id: 8,
-                name: "Tas Ransel Laptop Anti Air 15.6\"",
+                name: "Tas Ransel Laptop Anti Air 15.6 Inci",
                 price: 450000,
                 originalPrice: 599000,
                 image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&q=80",
+                fallback: "🎒",
                 category: "fashion",
                 rating: 4.6,
                 sold: 3200
             },
             {
                 id: 9,
-                name: "Semangka segar",
-                price: 30.000,
+                name: "Madu Hutan Asli Kalimantan 500ml",
+                price: 185000,
                 originalPrice: 250000,
                 image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&h=400&fit=crop&q=80",
+                fallback: "🍯",
                 category: "makanan",
                 rating: 4.9,
                 sold: 9100
@@ -759,7 +818,8 @@
                 name: "TWS Earbuds ANC Pro Bass Boost",
                 price: 349000,
                 originalPrice: 499000,
-                image: "https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=400&h=400&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400&h=400&fit=crop&q=80",
+                fallback: "🎧",
                 category: "elektronik",
                 rating: 4.5,
                 sold: 4500
@@ -769,7 +829,8 @@
                 name: "Jaket Bomber Premium Waterproof",
                 price: 389000,
                 originalPrice: 520000,
-                image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=400&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop&q=80",
+                fallback: "🧥",
                 category: "fashion",
                 rating: 4.7,
                 sold: 2100
@@ -779,7 +840,8 @@
                 name: "Masker Wajah Sheet Pack Isi 10",
                 price: 65000,
                 originalPrice: 95000,
-                image: "https://images.unsplash.com/photo-1570194065650-d99fb4b38b17?w=400&h=400&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop&q=80",
+                fallback: "🧖",
                 category: "kesehatan",
                 rating: 4.8,
                 sold: 15000
@@ -809,166 +871,214 @@
             return '★'.repeat(full) + (half ? '☆' : '') + '☆'.repeat(5 - full - half);
         }
 
-        function renderProducts(productsToShow) {
+        function handleImgError(img) {
+            img.style.display = 'none';
+            const fb = img.parentElement.querySelector('.img-fallback');
+            if (fb) fb.style.display = 'flex';
+        }
+
+        function renderProducts(list) {
             const grid = document.getElementById('productsGrid');
-            grid.innerHTML = productsToShow.map(product => {
-                const discount = calcDiscount(product.originalPrice, product.price);
-                const isWished = wishlist.has(product.id);
+            grid.innerHTML = list.map(p => {
+                const disc = calcDiscount(p.originalPrice, p.price);
+                const isW = wishlist.has(p.id);
                 return `
-                <div class="product-card" data-category="${product.category}">
+                <div class="product-card">
                     <div class="product-image-wrapper">
-                        <img class="product-image" 
-                             src="${product.image}" 
-                             alt="${product.name}"
-                             loading="lazy">
-                        ${discount > 0 ? `<span class="discount-badge">-${discount}%</span>` : ''}
-                        <button class="wishlist-btn ${isWished ? 'active' : ''}" onclick="toggleWishlist(event, ${product.id})">
-                            ${isWished ? '❤️' : '🤍'}
+                        <img class="product-image" src="${p.image}" alt="${p.name}" loading="lazy"
+                             onerror="handleImgError(this)">
+                        <div class="img-fallback">${p.fallback}</div>
+                        ${disc > 0 ? `<span class="discount-badge">-${disc}%</span>` : ''}
+                        <button class="wishlist-btn ${isW ? 'active' : ''}" onclick="toggleWishlist(event, ${p.id})">
+                            ${isW ? '❤️' : '🤍'}
                         </button>
                     </div>
                     <div class="product-info">
-                        <div class="product-title">${product.name}</div>
+                        <div class="product-title">${p.name}</div>
                         <div class="product-price-row">
-                            <span class="product-price">Rp ${formatPrice(product.price)}</span>
-                            ${product.originalPrice ? `<span class="original-price">Rp ${formatPrice(product.originalPrice)}</span>` : ''}
+                            <span class="product-price">Rp ${formatPrice(p.price)}</span>
+                            ${p.originalPrice ? `<span class="original-price">Rp ${formatPrice(p.originalPrice)}</span>` : ''}
                         </div>
                         <div class="product-rating">
-                            <span class="stars">${renderStars(product.rating)}</span>
-                            <span class="rating-text">${product.rating}</span>
-                            <span class="sold-text">Terjual ${formatSold(product.sold)}</span>
+                            <span class="stars">${renderStars(p.rating)}</span>
+                            <span class="rating-text">${p.rating}</span>
+                            <span class="sold-text">Terjual ${formatSold(p.sold)}</span>
                         </div>
-                        <button class="add-to-cart" onclick="addToCart(${product.id})">
-                            🛒 Tambah ke Keranjang
-                        </button>
+                        <button class="add-to-cart" onclick="addToCart(${p.id})">🛒 Tambah ke Keranjang</button>
                     </div>
                 </div>`;
             }).join('');
         }
 
-        // Filter kategori
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                const category = btn.dataset.category;
-                const filtered = category === 'all'
-                    ? products
-                    : products.filter(p => p.category === category);
-                renderProducts(filtered);
+                const cat = btn.dataset.category;
+                renderProducts(cat === 'all' ? products : products.filter(p => p.category === cat));
             });
         });
 
-        // Search dengan debounce
-        let searchTimeout;
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const query = e.target.value.toLowerCase().trim();
-                const activeBtn = document.querySelector('.category-btn.active');
-                const category = activeBtn.dataset.category;
-                let filtered = category === 'all' ? products : products.filter(p => p.category === category);
-                if (query) filtered = filtered.filter(p =>
-                    p.name.toLowerCase().includes(query) ||
-                    p.category.toLowerCase().includes(query)
-                );
-                renderProducts(filtered);
+        let searchTimer;
+        document.getElementById('searchInput').addEventListener('input', e => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                const q = e.target.value.toLowerCase().trim();
+                const cat = document.querySelector('.category-btn.active').dataset.category;
+                let list = cat === 'all' ? [...products] : products.filter(p => p.category === cat);
+                if (q) list = list.filter(p => p.name.toLowerCase().includes(q) || p.category.includes(q));
+                renderProducts(list);
             }, 200);
         });
 
-        // Wishlist
-        function toggleWishlist(event, productId) {
-            event.stopPropagation();
-            if (wishlist.has(productId)) {
-                wishlist.delete(productId);
-                showNotification('Dihapus dari wishlist', 'error');
+        // === WISHLIST ===
+        function toggleWishlist(e, id) {
+            e.stopPropagation();
+            const p = products.find(x => x.id === id);
+            if (wishlist.has(id)) {
+                wishlist.delete(id);
+                showNotification(`"${p.name.slice(0,25)}..." dihapus dari wishlist`, 'error');
             } else {
-                wishlist.add(productId);
-                showNotification('Ditambahkan ke wishlist ❤️', 'success');
+                wishlist.add(id);
+                showNotification(`"${p.name.slice(0,25)}..." ditambahkan ke wishlist`, 'wish');
             }
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            const activeBtn = document.querySelector('.category-btn.active');
-            const category = activeBtn.dataset.category;
-            let filtered = category === 'all' ? products : products.filter(p => p.category === category);
-            if (query) filtered = filtered.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
-            renderProducts(filtered);
+            updateBadges();
+            refreshCurrentView();
         }
 
-        // Add to cart
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existingItem = cart.find(item => item.id === productId);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...product, quantity: 1 });
+        function refreshCurrentView() {
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cat = document.querySelector('.category-btn.active').dataset.category;
+            let list = cat === 'all' ? [...products] : products.filter(p => p.category === cat);
+            if (q) list = list.filter(p => p.name.toLowerCase().includes(q) || p.category.includes(q));
+            renderProducts(list);
+        }
+
+        function openWish() {
+            document.getElementById('wishModal').style.display = 'flex';
+            renderWishlist();
+        }
+
+        function closeWish() {
+            document.getElementById('wishModal').style.display = 'none';
+        }
+
+        function renderWishlist() {
+            const el = document.getElementById('wishItems');
+            if (wishlist.size === 0) {
+                el.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💝</div>
+                        <p style="font-size:1.1rem;margin-bottom:0.5rem;">Wishlist masih kosong</p>
+                        <p style="font-size:0.9rem;">Tap ❤️ pada produk untuk menyimpannya</p>
+                    </div>`;
+                return;
             }
-            updateCartUI();
-            showNotification(`${product.name.slice(0, 30)}... ditambahkan!`, 'success');
+            const items = products.filter(p => wishlist.has(p.id));
+            el.innerHTML = `<div class="wishlist-grid">${items.map(p => `
+                <div class="wish-card">
+                    <img class="wish-card-img" src="${p.image}" alt="${p.name}"
+                         onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div style=\\'display:flex;align-items:center;justify-content:center;height:130px;font-size:3rem;background:#f0f0f0;\\'>${p.fallback}</div>')">
+                    <div class="wish-card-body">
+                        <div class="wish-card-title" title="${p.name}">${p.name}</div>
+                        <div class="wish-card-price">Rp ${formatPrice(p.price)}</div>
+                        <div class="wish-card-actions">
+                            <button class="wish-cart-btn" onclick="addToCartFromWish(${p.id})">🛒 Beli</button>
+                            <button class="wish-remove-btn" onclick="removeWish(${p.id})">✕</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('')}</div>`;
         }
 
-        function updateCartUI() {
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const el = document.getElementById('cartCount');
-            el.textContent = count;
-            el.style.display = count > 0 ? 'flex' : 'none';
+        function addToCartFromWish(id) {
+            const p = products.find(x => x.id === id);
+            const exist = cart.find(x => x.id === id);
+            if (exist) exist.quantity++;
+            else cart.push({ ...p, quantity: 1 });
+            updateBadges();
+            showNotification(`"${p.name.slice(0,25)}..." masuk keranjang!`, 'success');
+            renderWishlist();
         }
 
-        // Cart modal
-        document.getElementById('cartIcon').addEventListener('click', () => {
+        function removeWish(id) {
+            wishlist.delete(id);
+            updateBadges();
+            renderWishlist();
+            refreshCurrentView();
+            showNotification('Dihapus dari wishlist', 'error');
+        }
+
+        document.getElementById('wishIcon').addEventListener('click', openWish);
+
+        // === KERANJANG ===
+        function addToCart(id) {
+            const p = products.find(x => x.id === id);
+            const exist = cart.find(x => x.id === id);
+            if (exist) exist.quantity++;
+            else cart.push({ ...p, quantity: 1 });
+            updateBadges();
+            showNotification(`"${p.name.slice(0,25)}..." ditambahkan!`, 'success');
+        }
+
+        function openCart() {
             document.getElementById('cartModal').style.display = 'flex';
-            renderCartItems();
-        });
+            renderCart();
+        }
 
         function closeCart() {
             document.getElementById('cartModal').style.display = 'none';
         }
 
-        function renderCartItems() {
-            const cartItemsEl = document.getElementById('cartItems');
-            const cartSummaryEl = document.getElementById('cartSummary');
+        document.getElementById('cartIcon').addEventListener('click', openCart);
+
+        function renderCart() {
+            const itemsEl = document.getElementById('cartItems');
+            const sumEl = document.getElementById('cartSummary');
 
             if (cart.length === 0) {
-                cartItemsEl.innerHTML = `
-                    <div class="empty-cart">
-                        <div class="empty-cart-icon">🛒</div>
-                        <p style="font-size:1.1rem; margin-bottom:0.5rem;">Keranjang masih kosong</p>
+                itemsEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🛒</div>
+                        <p style="font-size:1.1rem;margin-bottom:0.5rem;">Keranjang masih kosong</p>
                         <p style="font-size:0.9rem;">Yuk mulai belanja sekarang!</p>
                     </div>`;
-                cartSummaryEl.innerHTML = '';
+                sumEl.innerHTML = '';
                 return;
             }
 
-            cartItemsEl.innerHTML = cart.map((item, index) => `
+            itemsEl.innerHTML = cart.map((item, i) => `
                 <div class="cart-item">
-                    <img class="cart-item-img" src="${item.image}" alt="${item.name}">
+                    <img class="cart-item-img" src="${item.image}" alt="${item.name}"
+                         onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div style=\\'display:flex;align-items:center;justify-content:center;width:80px;height:80px;font-size:2rem;background:#f0f0f0;border-radius:12px;flex-shrink:0;\\'>${item.fallback}</div>')">
                     <div class="cart-item-info">
                         <div class="cart-item-name">${item.name}</div>
                         <div class="cart-item-price">Rp ${formatPrice(item.price)}</div>
                         <div class="qty-controls">
-                            <button class="qty-btn" onclick="changeQty(${index}, -1)">−</button>
+                            <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
                             <span class="qty-value">${item.quantity}</span>
-                            <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                            <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
                         </div>
                     </div>
-                    <button class="remove-item" onclick="removeFromCart(${index})">🗑️</button>
+                    <button class="remove-item" onclick="removeCart(${i})">🗑️</button>
                 </div>
             `).join('');
 
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const shipping = subtotal > 200000 ? 0 : 15000;
-            const total = subtotal + shipping;
+            const sub = cart.reduce((s, x) => s + x.price * x.quantity, 0);
+            const ship = sub > 200000 ? 0 : 15000;
+            const total = sub + ship;
 
-            cartSummaryEl.innerHTML = `
+            sumEl.innerHTML = `
                 <div class="cart-summary">
                     <div class="summary-row">
-                        <span>Subtotal (${cart.reduce((s,i)=>s+i.quantity,0)} barang)</span>
-                        <span>Rp ${formatPrice(subtotal)}</span>
+                        <span>Subtotal (${cart.reduce((s,x)=>s+x.quantity,0)} barang)</span>
+                        <span>Rp ${formatPrice(sub)}</span>
                     </div>
                     <div class="summary-row">
                         <span>Ongkos Kirim</span>
-                        <span style="color: ${shipping === 0 ? '#00c851' : '#333'}">${shipping === 0 ? 'GRATIS' : 'Rp ' + formatPrice(shipping)}</span>
+                        <span style="color:${ship===0?'#00c851':'#333'}">${ship===0?'GRATIS':'Rp '+formatPrice(ship)}</span>
                     </div>
-                    ${shipping > 0 ? '<div style="font-size:0.8rem;color:#888;margin-bottom:0.5rem;">Belanja min. Rp 200.000 gratis ongkir!</div>' : ''}
+                    ${ship > 0 ? '<div style="font-size:0.8rem;color:#888;margin-bottom:0.5rem;">Belanja min. Rp 200.000 gratis ongkir!</div>' : ''}
                     <div class="total-row">
                         <span>Total</span>
                         <span>Rp ${formatPrice(total)}</span>
@@ -977,59 +1087,58 @@
                 </div>`;
         }
 
-        function changeQty(index, delta) {
-            cart[index].quantity += delta;
-            if (cart[index].quantity <= 0) cart.splice(index, 1);
-            renderCartItems();
-            updateCartUI();
+        function changeQty(i, d) {
+            cart[i].quantity += d;
+            if (cart[i].quantity <= 0) cart.splice(i, 1);
+            renderCart();
+            updateBadges();
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            renderCartItems();
-            updateCartUI();
+        function removeCart(i) {
+            cart.splice(i, 1);
+            renderCart();
+            updateBadges();
             showNotification('Produk dihapus dari keranjang', 'error');
         }
 
         function checkout() {
-            if (cart.length === 0) {
-                showNotification('Keranjang masih kosong!', 'error');
-                return;
-            }
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const shipping = subtotal > 200000 ? 0 : 15000;
-            const total = subtotal + shipping;
-            showNotification(`Pesanan berhasil! Total: Rp ${formatPrice(total)}`, 'success');
+            if (!cart.length) { showNotification('Keranjang masih kosong!', 'error'); return; }
+            const sub = cart.reduce((s, x) => s + x.price * x.quantity, 0);
+            const ship = sub > 200000 ? 0 : 15000;
+            showNotification(`Pesanan berhasil! Total: Rp ${formatPrice(sub + ship)}`, 'success');
             cart = [];
-            updateCartUI();
+            updateBadges();
             closeCart();
         }
 
-        // Notification
-        function showNotification(message, type = 'success') {
-            const existing = document.querySelector('.notification');
-            if (existing) existing.remove();
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `${type === 'success' ? '✅' : 'ℹ️'} ${message}`;
-            document.body.appendChild(notification);
+        function updateBadges() {
+            const cc = cart.reduce((s, x) => s + x.quantity, 0);
+            const wc = wishlist.size;
+            const ce = document.getElementById('cartCount');
+            const we = document.getElementById('wishCount');
+            ce.textContent = cc; ce.style.display = cc > 0 ? 'flex' : 'none';
+            we.textContent = wc; we.style.display = wc > 0 ? 'flex' : 'none';
+        }
+
+        function showNotification(msg, type = 'success') {
+            const old = document.querySelector('.notification');
+            if (old) old.remove();
+            const icons = { success: '✅', error: 'ℹ️', wish: '❤️' };
+            const n = document.createElement('div');
+            n.className = `notification ${type}`;
+            n.innerHTML = `${icons[type] || '✅'} ${msg}`;
+            document.body.appendChild(n);
             setTimeout(() => {
-                notification.style.animation = 'fadeOut 0.3s ease forwards';
-                setTimeout(() => notification.remove(), 300);
+                n.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => n.remove(), 300);
             }, 2500);
         }
 
-        // Close modal
-        document.getElementById('cartModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('cartModal')) closeCart();
-        });
+        document.getElementById('wishModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeWish(); });
+        document.getElementById('cartModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCart(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeWish(); closeCart(); } });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeCart();
-        });
-
-        // Init
-        updateCartUI();
+        updateBadges();
         renderProducts(products);
     </script>
 </body>
